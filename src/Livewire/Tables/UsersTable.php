@@ -36,22 +36,25 @@ class UsersTable extends YATBaseTable
                 ->hideFromSelector(true),
 
             Column::make(__('beartropy-permissions::messages.user'), $displayField)
-                ->styling('font-medium'),
+                ->styling('font-medium')
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.email'), 'email')
                 ->styling('text-gray-500')
-                ->collapseOnMobile(true),
+                ->collapseOnMobile(true)
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.roles'))
                 ->view('beartropy-permissions::partials.user-roles-badges')
                 ->sortable(false)
-                ->searchable(false),
+                ->searchable(false)
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.direct_permissions_short'))
                 ->customData(function ($row) {
                     return $row->getDirectPermissions()->count();
                 })
-                ->styling('text-center'),
+                ->centered(),
 
             Column::make('#')
                 ->view('beartropy-permissions::partials.user-actions')

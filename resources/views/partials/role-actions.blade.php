@@ -1,6 +1,8 @@
 <div class="flex items-center justify-end">
     <x-bt-tooltip
         :label="__('beartropy-permissions::messages.edit')"
+        position="left"
+        :delay="500"
     >
         <x-bt-button 
             xs 
@@ -12,6 +14,8 @@
     </x-bt-tooltip>
     <x-bt-tooltip
         :label="__('beartropy-permissions::messages.manage_permissions')"
+        position="left"
+        :delay="500"
     >
         <x-bt-button 
             xs 
@@ -24,6 +28,8 @@
     </x-bt-tooltip>
     <x-bt-tooltip
         :label="__('beartropy-permissions::messages.delete')"
+        position="left"
+        :delay="500"
     >
         <x-bt-button 
             xs 

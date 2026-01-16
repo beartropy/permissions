@@ -33,7 +33,7 @@
             </div>
 
             {{-- Grouped Permissions --}}
-            <div class="max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
+            <div class="max-h-96 overflow-y-auto beartropy-thin-scrollbar border border-gray-200 dark:border-gray-700 rounded-lg divide-y divide-gray-200 dark:divide-gray-700">
                 @forelse($this->groupedPermissions as $group => $permissions)
                     <div class="p-3">
                         {{-- Group Header --}}

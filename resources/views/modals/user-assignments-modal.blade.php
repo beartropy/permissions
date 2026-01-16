@@ -24,7 +24,7 @@
                     sm
                 />
 
-                <div class="max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
+                <div class="max-h-64 overflow-y-auto beartropy-thin-scrollbar border border-gray-200 dark:border-gray-700 rounded-lg">
                     @forelse($this->filteredRoles as $role)
                         @php $roleId = $role->id; @endphp
                         <button 
@@ -73,7 +73,7 @@
                     sm
                 />
 
-                <div class="max-h-64 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg">
+                <div class="max-h-64 overflow-y-auto beartropy-thin-scrollbar border border-gray-200 dark:border-gray-700 rounded-lg">
                     @forelse($this->filteredPermissions as $permission)
                         @php
                             $permId = $permission->id;

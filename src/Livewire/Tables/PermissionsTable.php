@@ -44,19 +44,22 @@ class PermissionsTable extends YATBaseTable
                     $parts = explode($groupSeparator, $row->name);
                     return count($parts) > 1 ? $parts[0] : '-';
                 })
-                ->styling('text-gray-500'),
+                ->styling('text-gray-500')
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.name'), 'name')
-                ->styling('font-medium'),
+                ->styling('font-medium')
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.guard'), 'guard_name')
-                ->styling('text-gray-500'),
+                ->styling('text-gray-500')
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.roles_count'))
                 ->customData(function ($row) {
                     return $row->roles->count();
                 })
-                ->styling('text-center'),
+                ->centered(),
 
             Column::make('#')
                 ->view('beartropy-permissions::partials.permission-actions')

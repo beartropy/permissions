@@ -38,22 +38,24 @@ class RolesTable extends YATBaseTable
                 ->hideFromSelector(true),
 
             Column::make(__('beartropy-permissions::messages.name'), 'name')
-                ->styling('font-medium'),
+                ->styling('font-medium')
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.guard'), 'guard_name')
-                ->styling('text-gray-500'),
+                ->styling('text-gray-500')
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.permissions_count'))
                 ->customData(function ($row) {
                     return $row->permissions->count();
                 })
-                ->styling('text-center'),
+                ->centered(),
 
             Column::make(__('beartropy-permissions::messages.users_count'))
                 ->customData(function ($row) {
                     return $row->users->count();
                 })
-                ->styling('text-center'),
+                ->centered(),
 
             Column::make('#')
                 ->view('beartropy-permissions::partials.role-actions')

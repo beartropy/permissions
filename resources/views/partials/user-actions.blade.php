@@ -1,6 +1,8 @@
 <div class="flex items-center justify-end gap-1 mr-1">
     <x-bt-tooltip
         :label="__('beartropy-permissions::messages.manage_roles_and_permissions')"
+        :delay="500"
+        position="left"
     >
         <x-bt-button 
             xs 
