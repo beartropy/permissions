@@ -1,0 +1,54 @@
+{
+    "name": "beartropy/permissions",
+    "version": "0.1.0",
+    "description": "Visual UI for spatie/laravel-permission using the Beartropy ecosystem",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "livewire",
+        "permissions",
+        "roles",
+        "spatie",
+        "beartropy"
+    ],
+    "require": {
+        "php": "^8.2",
+        "beartropy/ui": "*",
+        "beartropy/tables": "*",
+        "spatie/laravel-permission": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Beartropy\\Permissions\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0",
+        "pestphp/pest": "^3.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "pestphp/pest-plugin-livewire": "^3.0",
+        "livewire/livewire": "^3.7"
+    },
+    "authors": [
+        {
+            "name": "Beartropy"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Beartropy\\Permissions\\PermissionsServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
