@@ -19,6 +19,7 @@ class UsersTable extends YATBaseTable
         $this->model = config('beartropy-permissions.user_model');
         $this->setTitle(__('beartropy-permissions::messages.users'));
         $this->hasBulk(false);
+        $this->showCounter(false);
         $this->useStateHandler(false);
     }
 

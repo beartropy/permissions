@@ -14,8 +14,7 @@
     <div class="flex gap-1 mb-6 border-b border-zinc-200 dark:border-zinc-700 pb-1">
         <x-bt-button 
             wire:click="setTab('roles')"
-            :ghost="$activeTab !== 'roles'"
-            :primary="$activeTab === 'roles'"
+            :variant="$activeTab === 'roles' ? 'solid' : 'ghost'"
             icon-start="user-group"
             class="rounded-b-none"
             :spinner="false"
@@ -25,8 +24,7 @@
         
         <x-bt-button 
             wire:click="setTab('permissions')"
-            :ghost="$activeTab !== 'permissions'"
-            :primary="$activeTab === 'permissions'"
+            :variant="$activeTab === 'permissions' ? 'solid' : 'ghost'"
             icon-start="key"
             class="rounded-b-none"
             :spinner="false"
@@ -36,8 +34,7 @@
         
         <x-bt-button 
             wire:click="setTab('users')"
-            :ghost="$activeTab !== 'users'"
-            :primary="$activeTab === 'users'"
+            :variant="$activeTab === 'users' ? 'solid' : 'ghost'"
             icon-start="users"
             class="rounded-b-none"
             :spinner="false"
@@ -55,7 +52,7 @@
                     {{ __('beartropy-permissions::messages.roles_list') }}
                 </h2>
                 <x-bt-button 
-                    primary 
+                    tint 
                     sm 
                     icon-start="plus"
                     wire:click="$dispatch('createRole')"
@@ -75,7 +72,7 @@
                     {{ __('beartropy-permissions::messages.permissions_list') }}
                 </h2>
                 <x-bt-button 
-                    primary 
+                    tint 
                     sm 
                     icon-start="plus"
                     wire:click="$dispatch('createPermission')"

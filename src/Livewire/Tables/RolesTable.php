@@ -21,6 +21,7 @@ class RolesTable extends YATBaseTable
         $this->setTitle(__('beartropy-permissions::messages.roles'));
         $this->hasBulk(true);
         $this->useStateHandler(false);
+        $this->showCounter(false);
         $this->addButtons([
             ['label' => __('beartropy-permissions::messages.delete_selected'), 'action' => 'deleteSelected', 'color' => 'red']
         ]);
