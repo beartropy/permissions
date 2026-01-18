@@ -1,6 +1,6 @@
-# Contributing to Beartropy UI
+# Contributing to Beartropy
 
-Thank you for considering contributing to Beartropy UI! The contribution guide can be found in the [Beartropy documentation](https://beartropy.com/contributing).
+Thank you for considering contributing to Beartropy! The contribution guide can be found in the [Beartropy documentation](https://beartropy.com/contributing).
 
 ## Bug Reports
 
