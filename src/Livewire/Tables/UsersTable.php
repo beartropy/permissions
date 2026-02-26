@@ -24,12 +24,28 @@ class UsersTable extends YATBaseTable
     }
 
     /**
+     * Base query with aggregate count for direct permissions.
+     */
+    public function query(): \Illuminate\Database\Eloquent\Builder
+    {
+        $model = config('beartropy-permissions.user_model');
+
+        return $model::withCount('permissions');
+    }
+
+    /**
+     * Relationships to eager load (roles needed for badge display).
+     */
+    public array $with = ['roles'];
+
+    /**
      * Define the columns for this table.
      */
     public function columns(): array
     {
         $displayField = config('beartropy-permissions.user_display_field', 'name');
-        
+        $searchFields = config('beartropy-permissions.user_search_fields', ['name', 'email']);
+
         return [
             Column::make(__('beartropy-permissions::messages.id'), 'id')
                 ->styling('w-16')
@@ -37,11 +53,19 @@ class UsersTable extends YATBaseTable
 
             Column::make(__('beartropy-permissions::messages.user'), $displayField)
                 ->styling('font-medium')
+                ->searchable(function ($query, $term) use ($searchFields) {
+                    $query->where(function ($q) use ($searchFields, $term) {
+                        foreach ($searchFields as $field) {
+                            $q->orWhere($field, 'like', '%' . $term . '%');
+                        }
+                    });
+                })
                 ->centered(),
 
             Column::make(__('beartropy-permissions::messages.email'), 'email')
                 ->styling('text-gray-500')
                 ->collapseOnMobile(true)
+                ->searchable(false)
                 ->centered(),
 
             Column::make(__('beartropy-permissions::messages.roles'))
@@ -51,9 +75,7 @@ class UsersTable extends YATBaseTable
                 ->centered(),
 
             Column::make(__('beartropy-permissions::messages.direct_permissions_short'))
-                ->customData(function ($row) {
-                    return $row->getDirectPermissions()->count();
-                })
+                ->customData(fn ($row) => $row->permissions_count)
                 ->centered(),
 
             Column::make('#')
@@ -64,9 +86,4 @@ class UsersTable extends YATBaseTable
                 ->pushRight(true),
         ];
     }
-
-    /**
-     * Relationships to eager load.
-     */
-    public $with = ['roles', 'permissions'];
 }

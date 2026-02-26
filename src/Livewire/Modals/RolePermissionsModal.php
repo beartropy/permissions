@@ -2,13 +2,17 @@
 
 namespace Beartropy\Permissions\Livewire\Modals;
 
+use Beartropy\Permissions\Concerns\AuthorizesPermissionsAccess;
 use Livewire\Component;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class RolePermissionsModal extends Component
 {
+    use AuthorizesPermissionsAccess;
+
     public bool $showModal = false;
     public ?int $roleId = null;
     public ?Role $role = null;
@@ -47,7 +51,7 @@ class RolePermissionsModal extends Component
      */
     public function selectAll(): void
     {
-        $permissions = $this->getFilteredPermissions();
+        $permissions = $this->filteredPermissions;
         $this->selectedPermissions = array_unique(
             array_merge($this->selectedPermissions, $permissions->pluck('id')->toArray())
         );
@@ -58,7 +62,7 @@ class RolePermissionsModal extends Component
      */
     public function deselectAll(): void
     {
-        $permissions = $this->getFilteredPermissions();
+        $permissions = $this->filteredPermissions;
         $idsToRemove = $permissions->pluck('id')->toArray();
         $this->selectedPermissions = array_values(
             array_diff($this->selectedPermissions, $idsToRemove)
@@ -70,21 +74,24 @@ class RolePermissionsModal extends Component
      */
     public function save(): void
     {
-        if (!$this->roleId) {
+        $this->authorizeAccess();
+
+        if ($this->roleId === null) {
             return;
         }
 
-        // Reload role from database to ensure fresh instance
         $role = Role::findOrFail($this->roleId);
 
-        // Get permissions by ID (no guard filter - Spatie handles this internally)
         $permissions = Permission::whereIn('id', $this->selectedPermissions)->get();
 
-        // Sync permissions
-        $role->syncPermissions($permissions);
+        try {
+            $role->syncPermissions($permissions);
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', type: 'error', message: $e->getMessage());
+            return;
+        }
 
-        // Reset Spatie permission cache
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         $this->showModal = false;
         $this->dispatch('refresh');
@@ -99,12 +106,13 @@ class RolePermissionsModal extends Component
     }
 
     /**
-     * Get permissions filtered by search and grouped.
+     * Get permissions filtered by search.
      */
-    public function getFilteredPermissions()
+    #[Computed]
+    public function filteredPermissions()
     {
         $guard = $this->role?->guard_name ?? config('beartropy-permissions.default_guard', 'web');
-        
+
         $query = Permission::where('guard_name', $guard);
 
         if (!empty($this->search)) {
@@ -119,18 +127,23 @@ class RolePermissionsModal extends Component
      */
     public function getGroupedPermissionsProperty(): array
     {
-        $permissions = $this->getFilteredPermissions();
+        $permissions = $this->filteredPermissions;
+
+        if (!config('beartropy-permissions.group_permissions', true)) {
+            return ['general' => $permissions->all()];
+        }
+
         $separator = config('beartropy-permissions.permission_group_separator', '.');
         $groups = [];
 
         foreach ($permissions as $permission) {
             $parts = explode($separator, $permission->name);
             $group = count($parts) > 1 ? $parts[0] : 'general';
-            
+
             if (!isset($groups[$group])) {
                 $groups[$group] = [];
             }
-            
+
             $groups[$group][] = $permission;
         }
 

@@ -1,0 +1,5 @@
+{
+    "prefix": "bt-permissions",
+    "excludeSkills": ["bt-permissions-docs-maintenance"],
+    "componentDocs": "docs/llms"
+}

@@ -70,12 +70,14 @@ php artisan vendor:publish --tag=beartropy-permissions-config
 ```php
 // config/beartropy-permissions.php
 return [
-    'route_prefix' => 'permissions',
-    'route_middleware' => ['web', 'auth'],
+    'prefix' => 'permissions',
+    'middleware' => ['web', 'auth', 'can:manage-permissions'],
+    'gate' => 'manage-permissions',
     'user_model' => App\Models\User::class,
     'guards' => ['web'],
     'default_guard' => 'web',
     'user_display_field' => 'name',
+    'user_search_fields' => ['name', 'email'],
     'group_permissions' => true,
     'permission_group_separator' => '.',
 ];
@@ -116,7 +118,7 @@ Add more languages by publishing translations and creating new language files.
 
 ## 📦 Requirements
 
-- PHP 8.1+
+- PHP 8.2+
 - Laravel 10.x or 11.x
 - Livewire 3.x
 - spatie/laravel-permission ^6.0

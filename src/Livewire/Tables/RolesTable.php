@@ -2,6 +2,7 @@
 
 namespace Beartropy\Permissions\Livewire\Tables;
 
+use Beartropy\Permissions\Concerns\AuthorizesPermissionsAccess;
 use Livewire\Attributes\On;
 use Beartropy\Tables\YATBaseTable;
 use Beartropy\Tables\Classes\Columns\Column;
@@ -9,6 +10,8 @@ use Spatie\Permission\Models\Role;
 
 class RolesTable extends YATBaseTable
 {
+    use AuthorizesPermissionsAccess;
+
     public $tableName = 'RolesTable';
     public string $theme = 'indigo';
 
@@ -25,6 +28,14 @@ class RolesTable extends YATBaseTable
         $this->addButtons([
             ['label' => __('beartropy-permissions::messages.delete_selected'), 'action' => 'deleteSelected', 'color' => 'red']
         ]);
+    }
+
+    /**
+     * Base query with aggregate counts instead of eager loading.
+     */
+    public function query(): \Illuminate\Database\Eloquent\Builder
+    {
+        return Role::withCount(['permissions', 'users']);
     }
 
     /**
@@ -46,15 +57,11 @@ class RolesTable extends YATBaseTable
                 ->centered(),
 
             Column::make(__('beartropy-permissions::messages.permissions_count'))
-                ->customData(function ($row) {
-                    return $row->permissions->count();
-                })
+                ->customData(fn ($row) => $row->permissions_count)
                 ->centered(),
 
             Column::make(__('beartropy-permissions::messages.users_count'))
-                ->customData(function ($row) {
-                    return $row->users->count();
-                })
+                ->customData(fn ($row) => $row->users_count)
                 ->centered(),
 
             Column::make('#')
@@ -67,22 +74,22 @@ class RolesTable extends YATBaseTable
     }
 
     /**
-     * Relationships to eager load.
-     */
-    public $with = ['permissions', 'users'];
-
-    /**
      * Delete selected roles.
      */
     public function deleteSelected(): void
     {
+        $this->authorizeAccess();
+
         $ids = $this->getSelectedRows();
-        
+
         if (empty($ids)) {
             return;
         }
 
         Role::whereIn('id', $ids)->delete();
+
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         $this->emptySelection();
         $this->dispatch('refresh');
     }
@@ -93,7 +100,12 @@ class RolesTable extends YATBaseTable
     #[On('deleteRole')]
     public function deleteRole(int $id): void
     {
+        $this->authorizeAccess();
+
         Role::find($id)?->delete();
+
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         $this->dispatch('refresh');
     }
 }

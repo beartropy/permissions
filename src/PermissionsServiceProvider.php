@@ -44,6 +44,23 @@ class PermissionsServiceProvider extends ServiceProvider
 
         // Register Livewire components
         $this->registerLivewireComponents();
+
+        // Register MCP tools with Laravel Boost when available
+        if (class_exists(\Laravel\Boost\BoostServiceProvider::class)) {
+            $this->registerBoostTools();
+        }
+    }
+
+    /**
+     * Register MCP tools with Laravel Boost when available.
+     */
+    protected function registerBoostTools(): void
+    {
+        $include = config('boost.mcp.tools.include', []);
+        $include[] = \Beartropy\Permissions\Mcp\Tools\ComponentDocs::class;
+        $include[] = \Beartropy\Permissions\Mcp\Tools\ListComponents::class;
+        $include[] = \Beartropy\Permissions\Mcp\Tools\ProjectContext::class;
+        config(['boost.mcp.tools.include' => $include]);
     }
 
     /**

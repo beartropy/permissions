@@ -61,6 +61,7 @@ return [
     'roles_count' => 'Roles',
     'direct_permissions_short' => 'Permisos Directos',
     'without_roles' => 'Sin roles',
+    'user_fallback' => 'Usuario #:id',
     
     // Actions
     'save' => 'Guardar',

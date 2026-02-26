@@ -2,6 +2,7 @@
 
 namespace Beartropy\Permissions\Livewire\Modals;
 
+use Beartropy\Permissions\Concerns\AuthorizesPermissionsAccess;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Spatie\Permission\Models\Role;
@@ -10,6 +11,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserAssignmentsModal extends Component
 {
+    use AuthorizesPermissionsAccess;
+
     public bool $showModal = false;
     public ?int $userId = null;
     public ?Model $user = null;
@@ -63,24 +66,27 @@ class UserAssignmentsModal extends Component
      */
     public function save(): void
     {
-        if (!$this->userId) {
+        $this->authorizeAccess();
+
+        if ($this->userId === null) {
             return;
         }
 
-        // Reload user from database to ensure fresh instance
         $userModel = config('beartropy-permissions.user_model');
         $user = $userModel::findOrFail($this->userId);
 
-        // Sync roles
         $roles = Role::whereIn('id', $this->selectedRoles)->get();
-        $user->syncRoles($roles);
-
-        // Sync direct permissions
         $permissions = Permission::whereIn('id', $this->selectedPermissions)->get();
-        $user->syncPermissions($permissions);
 
-        // Reset Spatie permission cache
-        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+        try {
+            $user->syncRoles($roles);
+            $user->syncPermissions($permissions);
+        } catch (\Throwable $e) {
+            $this->dispatch('notify', type: 'error', message: $e->getMessage());
+            return;
+        }
+
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
         $this->showModal = false;
         $this->dispatch('refresh');
@@ -92,6 +98,7 @@ class UserAssignmentsModal extends Component
     public function close(): void
     {
         $this->showModal = false;
+        $this->user = null;
     }
 
     /**
@@ -133,7 +140,7 @@ class UserAssignmentsModal extends Component
 
         $allPermissions = $this->user->getAllPermissions()->pluck('id')->toArray();
         $directPermissions = $this->user->getDirectPermissions()->pluck('id')->toArray();
-        
+
         return array_diff($allPermissions, $directPermissions);
     }
 
@@ -147,7 +154,8 @@ class UserAssignmentsModal extends Component
         }
 
         $field = config('beartropy-permissions.user_display_field', 'name');
-        return $this->user->{$field} ?? 'Usuario #' . $this->userId;
+        return $this->user->{$field}
+            ?? __('beartropy-permissions::messages.user_fallback', ['id' => $this->userId]);
     }
 
     public function render()

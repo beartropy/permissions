@@ -14,7 +14,7 @@ A comprehensive UI for managing roles, permissions, and user assignments for Lar
 
 ## Requirements
 
-- PHP 8.1+
+- PHP 8.2+
 - Laravel 10.x or 11.x
 - Livewire 3.x
 - [spatie/laravel-permission](https://github.com/spatie/laravel-permission) ^6.0
@@ -74,8 +74,9 @@ return [
     | Route Configuration
     |--------------------------------------------------------------------------
     */
-    'route_prefix' => 'permissions',
-    'route_middleware' => ['web', 'auth'],
+    'prefix' => 'permissions',
+    'middleware' => ['web', 'auth', 'can:manage-permissions'],
+    'gate' => 'manage-permissions',
 
     /*
     |--------------------------------------------------------------------------
@@ -157,7 +158,7 @@ It's recommended to protect the permissions route with authorization middleware:
 
 ```php
 // config/beartropy-permissions.php
-'route_middleware' => ['web', 'auth', 'can:manage-permissions'],
+'middleware' => ['web', 'auth', 'can:manage-permissions'],
 ```
 
 Or create a custom middleware:

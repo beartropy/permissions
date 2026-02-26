@@ -18,10 +18,21 @@ return [
     |--------------------------------------------------------------------------
     |
     | These middleware will be applied to all routes within this package.
-    | By default, we require web and auth middleware.
+    | By default, we require web and auth middleware plus authorization.
     |
     */
-    'middleware' => ['web', 'auth'],
+    'middleware' => ['web', 'auth', 'can:manage-permissions'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Authorization Gate
+    |--------------------------------------------------------------------------
+    |
+    | The gate/permission name checked before any mutation (create, update,
+    | delete). Set to null to disable gate checks (not recommended).
+    |
+    */
+    'gate' => 'manage-permissions',
 
     /*
     |--------------------------------------------------------------------------

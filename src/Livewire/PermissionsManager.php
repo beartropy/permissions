@@ -18,6 +18,10 @@ class PermissionsManager extends Component
      */
     public function setTab(string $tab): void
     {
+        if (!in_array($tab, ['roles', 'permissions', 'users'])) {
+            return;
+        }
+
         $this->activeTab = $tab;
     }
 

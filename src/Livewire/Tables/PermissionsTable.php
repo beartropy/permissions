@@ -2,6 +2,7 @@
 
 namespace Beartropy\Permissions\Livewire\Tables;
 
+use Beartropy\Permissions\Concerns\AuthorizesPermissionsAccess;
 use Livewire\Attributes\On;
 use Beartropy\Tables\YATBaseTable;
 use Beartropy\Tables\Classes\Columns\Column;
@@ -9,6 +10,8 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionsTable extends YATBaseTable
 {
+    use AuthorizesPermissionsAccess;
+
     public $tableName = 'PermissionsTable';
     public string $theme = 'emerald';
 
@@ -28,25 +31,38 @@ class PermissionsTable extends YATBaseTable
     }
 
     /**
+     * Base query with aggregate count instead of eager loading.
+     */
+    public function query(): \Illuminate\Database\Eloquent\Builder
+    {
+        return Permission::withCount('roles');
+    }
+
+    /**
      * Define the columns for this table.
      */
     public function columns(): array
     {
         $groupSeparator = config('beartropy-permissions.permission_group_separator', '.');
-        
-        return [
+        $showGroup = config('beartropy-permissions.group_permissions', true);
+
+        $columns = [
             Column::make(__('beartropy-permissions::messages.id'), 'id')
                 ->styling('w-16')
                 ->hideFromSelector(true),
+        ];
 
-            Column::make(__('beartropy-permissions::messages.group'))
+        if ($showGroup) {
+            $columns[] = Column::make(__('beartropy-permissions::messages.group'))
                 ->customData(function ($row) use ($groupSeparator) {
                     $parts = explode($groupSeparator, $row->name);
                     return count($parts) > 1 ? $parts[0] : '-';
                 })
                 ->styling('text-gray-500')
-                ->centered(),
+                ->centered();
+        }
 
+        $columns = array_merge($columns, [
             Column::make(__('beartropy-permissions::messages.name'), 'name')
                 ->styling('font-medium')
                 ->centered(),
@@ -56,9 +72,7 @@ class PermissionsTable extends YATBaseTable
                 ->centered(),
 
             Column::make(__('beartropy-permissions::messages.roles_count'))
-                ->customData(function ($row) {
-                    return $row->roles->count();
-                })
+                ->customData(fn ($row) => $row->roles_count)
                 ->centered(),
 
             Column::make('#')
@@ -67,26 +81,28 @@ class PermissionsTable extends YATBaseTable
                 ->searchable(false)
                 ->styling('w-24')
                 ->pushRight(true),
-        ];
-    }
+        ]);
 
-    /**
-     * Relationships to eager load.
-     */
-    public $with = ['roles'];
+        return $columns;
+    }
 
     /**
      * Delete selected permissions.
      */
     public function deleteSelected(): void
     {
+        $this->authorizeAccess();
+
         $ids = $this->getSelectedRows();
-        
+
         if (empty($ids)) {
             return;
         }
 
         Permission::whereIn('id', $ids)->delete();
+
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         $this->emptySelection();
         $this->dispatch('refresh');
     }
@@ -97,7 +113,12 @@ class PermissionsTable extends YATBaseTable
     #[On('deletePermission')]
     public function deletePermission(int $id): void
     {
+        $this->authorizeAccess();
+
         Permission::find($id)?->delete();
+
+        app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         $this->dispatch('refresh');
     }
 }
