@@ -5,6 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-02-26
+
+### Added
+- Configurable gate authorization on all mutation operations (`gate` config key)
+- `AuthorizesPermissionsAccess` trait for shared authorization logic
+- `ManagesEntity` trait extracting shared modal create/edit/save/close logic
+- Unique validation scoped to guard for role and permission names
+- `#[Computed]` attribute on `filteredPermissions` for request-lifecycle caching
+- `user_search_fields` config now wired into UsersTable with custom search callback
+- `group_permissions` config toggle for PermissionsTable group column and RolePermissionsModal grouping
+- Tab input validation in PermissionsManager (rejects invalid tab values)
+- Try/catch around sync operations with error toast notifications
+- Translation key `user_fallback` for missing user display name
+- Full test suite: 120 tests, 219 assertions (Pest + Livewire + Orchestra Testbench)
+- AI integration scaffold: MCP tools, skills, component docs, integrity tests
+- Laravel Boost MCP tool registration (conditional on Boost presence)
+
+### Fixed
+- Hardcoded Spanish fallback `'Usuario #'` replaced with translatable string
+- Falsy guard checks (`!$this->roleId`) replaced with strict `=== null`
+- Spatie permission cache now cleared on all delete operations (single and bulk)
+- N+1 queries: replaced eager loading with `withCount()` on all three tables
+- Config key names in README/DOCS (`route_prefix` → `prefix`, `route_middleware` → `middleware`)
+- PHP version requirement in docs corrected to 8.2+
+- `$user` property reset to null in `UserAssignmentsModal::close()` to prevent stale serialization
+
+### Changed
+- `RoleModal` and `PermissionModal` refactored to use `ManagesEntity` trait
+- `RolesTable` and `PermissionsTable` override `query()` with aggregate counts
+- `UsersTable` uses `withCount('permissions')` instead of `getDirectPermissions()->count()`
+
 ## [0.1.2] - 2026-01-16
 
 ### Added

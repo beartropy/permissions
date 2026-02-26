@@ -12,7 +12,7 @@
             "options": { "symlink": true }
         }
     ],
-    "version": "0.1.2",
+    "version": "0.2.0",
     "description": "Visual UI for spatie/laravel-permission using the Beartropy ecosystem",
     "license": "MIT",
     "keywords": [
