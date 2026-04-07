@@ -12,7 +12,7 @@
             "options": { "symlink": true }
         }
     ],
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "Visual UI for spatie/laravel-permission using the Beartropy ecosystem",
     "license": "MIT",
     "keywords": [
@@ -40,11 +40,11 @@
         }
     },
     "require-dev": {
-        "orchestra/testbench": "^9.0",
-        "pestphp/pest": "^3.0",
-        "pestphp/pest-plugin-laravel": "^3.0",
-        "pestphp/pest-plugin-livewire": "^3.0",
-        "livewire/livewire": "^3.7"
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0",
+        "pestphp/pest-plugin-livewire": "^3.0|^4.0",
+        "livewire/livewire": "^3.7|^4.0"
     },
     "authors": [
         {

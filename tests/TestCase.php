@@ -63,6 +63,11 @@ class TestCase extends Orchestra
             config('view.paths', []),
         ));
 
+        // Livewire 4 uses layouts:: namespace for its default layout
+        if (class_exists(\Livewire\Finder\Finder::class)) {
+            $app['config']->set('livewire.component_namespaces.layouts', __DIR__ . '/views/components/layouts');
+        }
+
         // Configure the permissions package to use our test User model
         $app['config']->set('beartropy-permissions.user_model', \Tests\Models\User::class);
         $app['config']->set('beartropy-permissions.gate', null); // Disable gate by default in tests

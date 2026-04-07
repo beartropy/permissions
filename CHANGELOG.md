@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2026-04-07
+
+### Added
+- Livewire 4 support (`^3.7|^4.0`) with full backward compatibility for Livewire 3
+- `Route::livewire()` routing for Livewire 4, with `Route::get()` fallback for Livewire 3
+- Missing component resolver for Livewire 4's `::` namespace separator handling
+
+### Changed
+- Widened dev dependency constraints for Pest 4, Testbench 10, and Livewire 4
+
 ## [0.2.1] - 2026-04-07
 
 ### Changed

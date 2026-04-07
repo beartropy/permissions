@@ -68,18 +68,28 @@ class PermissionsServiceProvider extends ServiceProvider
      */
     protected function registerLivewireComponents(): void
     {
-        // Main Manager
-        Livewire::component('beartropy-permissions::permissions-manager', \Beartropy\Permissions\Livewire\PermissionsManager::class);
+        $components = [
+            'beartropy-permissions::permissions-manager' => \Beartropy\Permissions\Livewire\PermissionsManager::class,
+            'beartropy-permissions::roles-table' => \Beartropy\Permissions\Livewire\Tables\RolesTable::class,
+            'beartropy-permissions::permissions-table' => \Beartropy\Permissions\Livewire\Tables\PermissionsTable::class,
+            'beartropy-permissions::users-table' => \Beartropy\Permissions\Livewire\Tables\UsersTable::class,
+            'beartropy-permissions::role-modal' => \Beartropy\Permissions\Livewire\Modals\RoleModal::class,
+            'beartropy-permissions::permission-modal' => \Beartropy\Permissions\Livewire\Modals\PermissionModal::class,
+            'beartropy-permissions::role-permissions-modal' => \Beartropy\Permissions\Livewire\Modals\RolePermissionsModal::class,
+            'beartropy-permissions::user-assignments-modal' => \Beartropy\Permissions\Livewire\Modals\UserAssignmentsModal::class,
+        ];
 
-        // Tables
-        Livewire::component('beartropy-permissions::roles-table', \Beartropy\Permissions\Livewire\Tables\RolesTable::class);
-        Livewire::component('beartropy-permissions::permissions-table', \Beartropy\Permissions\Livewire\Tables\PermissionsTable::class);
-        Livewire::component('beartropy-permissions::users-table', \Beartropy\Permissions\Livewire\Tables\UsersTable::class);
+        foreach ($components as $name => $class) {
+            Livewire::component($name, $class);
+        }
 
-        // Modals
-        Livewire::component('beartropy-permissions::role-modal', \Beartropy\Permissions\Livewire\Modals\RoleModal::class);
-        Livewire::component('beartropy-permissions::permission-modal', \Beartropy\Permissions\Livewire\Modals\PermissionModal::class);
-        Livewire::component('beartropy-permissions::role-permissions-modal', \Beartropy\Permissions\Livewire\Modals\RolePermissionsModal::class);
-        Livewire::component('beartropy-permissions::user-assignments-modal', \Beartropy\Permissions\Livewire\Modals\UserAssignmentsModal::class);
+        // Livewire 4 treats :: as a namespace separator, so components registered
+        // via Livewire::component() with :: in their name won't resolve through the
+        // standard finder. Register a fallback resolver to handle this.
+        if (class_exists(\Livewire\Finder\Finder::class)) {
+            Livewire::resolveMissingComponent(function (string $name) use ($components) {
+                return $components[$name] ?? null;
+            });
+        }
     }
 }
