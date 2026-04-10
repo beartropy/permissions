@@ -1,0 +1,38 @@
+# Beartropy Permissions - Cursor Rules
+
+## Project Context
+This project uses **Beartropy Permissions**, a Livewire admin UI for spatie/laravel-permission.
+
+## Main Component
+```blade
+@livewire('beartropy-permissions::permissions-manager')
+```
+
+## Livewire Components
+```
+beartropy-permissions::permissions-manager    # Full tabbed UI
+beartropy-permissions::roles-table            # Roles table
+beartropy-permissions::permissions-table      # Permissions table
+beartropy-permissions::users-table            # Users table
+beartropy-permissions::role-modal             # Create/edit role
+beartropy-permissions::permission-modal       # Create/edit permission
+beartropy-permissions::role-permissions-modal # Assign permissions to role
+beartropy-permissions::user-assignments-modal # Assign roles/permissions to user
+```
+
+## Configuration
+```php
+// config/beartropy-permissions.php
+'prefix' => 'permissions',
+'middleware' => ['web', 'auth', 'can:manage-permissions'],
+'gate' => 'manage-permissions',
+'user_model' => App\Models\User::class,
+'group_permissions' => true,
+'permission_group_separator' => '.',
+```
+
+## Best Practices
+- Define the `manage-permissions` gate before using the package
+- Use dot notation for permissions: `users.create`, `users.edit`, `posts.publish`
+- The User model must use `Spatie\Permission\Traits\HasRoles`
+- All CRUD operations check the configured gate automatically

@@ -4,15 +4,19 @@
         {
             "type": "path",
             "url": "../tables",
-            "options": { "symlink": true }
+            "options": {
+                "symlink": true
+            }
         },
         {
             "type": "path",
             "url": "../ui",
-            "options": { "symlink": true }
+            "options": {
+                "symlink": true
+            }
         }
     ],
-    "version": "0.2.2",
+    "version": "0.2.3",
     "description": "Visual UI for spatie/laravel-permission using the Beartropy ecosystem",
     "license": "MIT",
     "keywords": [
