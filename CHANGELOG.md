@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2026-06-25
+
+### Changed
+- **Dependencies**: Allow `spatie/laravel-permission` v8 (`^7.0|^8.0`). Composer resolves v7 on PHP 8.2 / Laravel 11 and v8 on PHP 8.3+ / Laravel 12-13; no code changes required.
+- **Dev**: Test against Laravel 13 via Orchestra Testbench 11 (`orchestra/testbench: ^9.0|^10.0|^11.0`).
+
 ## [0.2.3] - 2026-04-10
 
 ### Added
